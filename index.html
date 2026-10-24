@@ -152,7 +152,140 @@ $('productForm').onsubmit = async e => {
     button.disabled = false;
   }
 };
-function renderOrders(){const q=$('orderSearch').value.trim().toLowerCase(),root=$('adminOrders');root.replaceChildren();for(const o of orders.filter(o=>[o.id,o.customer_name,o.phone].some(v=>String(v).toLowerCase().includes(q)))){const card=node('div','');card.className='orderCard';card.append(node('h3','#'+o.id+' — '+o.customer_name));for(const [label,v] of [['الهاتف',o.phone],['العنوان',o.province+' / '+o.district+' / '+o.address],['الملاحظات',o.notes||'—'],['التاريخ',new Date(o.created_at).toLocaleString('ar-IQ')]])card.append(node('p',label+': '+v));for(const it of items.filter(x=>x.order_id===o.id))card.append(node('p','• '+it.product_name+' × '+it.quantity+' — '+money(it.unit_price*it.quantity)));card.append(node('strong','الإجمالي: '+money(o.total)));const row=node('div','');row.className='row noPrint';const select=document.createElement('select');for(const s of ['قيد الانتظار','مقبول','قيد التجهيز','قيد التوصيل','مكتمل','ملغي'])select.add(new Option(s,s));select.value=o.status;select.onchange=async()=>{const {error}=await db.from('store_orders').update({status:select.value}).eq('id',o.id);if(error){alert(error.message);select.value=o.status}else{o.status=select.value;renderMetrics()}};const print=node('button','طباعة');print.className='small soft';print.onclick=()=>{const w=window.open('','_blank');if(!w)return alert('اسمح بالنوافذ المنبثقة للطباعة');const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));w.document.write('<html dir="rtl"><meta charset="utf-8"><title>وصل الطلب</title><body style="font-family:Tahoma;padding:25px"><h2>'+esc(config.name)+'</h2><h3>طلب #'+esc(o.id)+'</h3><p>'+esc(o.customer_name)+' — '+esc(o.phone)+'</p><p>'+esc(o.province+' / '+o.district+' / '+o.address)+'</p>'+items.filter(x=>x.order_id===o.id).map(x=>'<p>'+esc(x.product_name)+' × '+esc(x.quantity)+' — '+esc(money(x.unit_price*x.quantity))+'</p>').join('')+'<h3>'+esc(money(o.total))+'</h3></body></html>');w.document.close();w.focus();w.print()};const wa=node('button','واتساب');wa.className='small soft';wa.onclick=()=>{let n=o.phone.replace(/\D/g,'');if(n.startsWith('07'))n='964'+n.slice(1);else if(n.startsWith('7'))n='964'+n;window.open('https://wa.me/'+n+'?text='+encodeURIComponent('مرحباً '+o.customer_name+'، طلبك رقم '+o.id+' حالته: '+o.status),'_blank','noopener,noreferrer')};row.append(select,print,wa);card.append(row);root.append(card)}if(!root.children.length)root.append(node('p','لا توجد طلبات'))}
+function renderOrders(){
+  const q=$('orderSearch').value.trim().toLowerCase();
+  const root=$('adminOrders');
+  root.replaceChildren();
+
+  for(const o of orders.filter(o=>
+    [o.id,o.customer_name,o.phone].some(v=>
+      String(v).toLowerCase().includes(q)
+    )
+  )){
+    const card=node('div','');
+    card.className='orderCard';
+
+    card.append(node('h3','#'+o.id+' — '+o.customer_name));
+
+    for(const [label,v] of [
+      ['الهاتف',o.phone],
+      ['العنوان',o.province+' / '+o.district+' / '+o.address],
+      ['الملاحظات',o.notes||'—'],
+      ['التاريخ',new Date(o.created_at).toLocaleString('ar-IQ')]
+    ]){
+      card.append(node('p',label+': '+v));
+    }  
+ for(const it of items.filter(x=>x.order_id===o.id)){
+  const r=node('div','');
+  r.className='cartRow';
+
+  const p=products.find(x=>String(x.id)===String(it.product_id));
+
+  const img=document.createElement('img');
+  img.src=safeUrl(p?.image_url)||'./assets/logo.jpg';
+  img.alt=it.product_name;
+  img.loading='lazy';
+  img.onerror=()=>{
+    img.onerror=null;
+    img.src='./assets/logo.jpg';
+  };
+
+  const info=node('div','');
+  info.className='grow';
+  info.textContent='• '+it.product_name+' × '+it.quantity+
+    ' — '+money(it.unit_price*it.quantity);
+
+  r.append(img,info);
+  card.append(r);
+}
+card.append(node('strong','الإجمالي: '+money(o.total)));
+
+const row=node('div','');
+row.className='row noPrint';
+
+const select=document.createElement('select');
+
+for(const s of ['قيد الانتظار','مقبول','قيد التجهيز','قيد التوصيل','مكتمل','ملغي']){
+  select.add(new Option(s,s));
+}
+
+select.value=o.status;
+
+select.onchange=async()=>{
+  const {error}=await db.from('store_orders')
+    .update({status:select.value}).eq('id',o.id);
+
+  if(error){
+    alert(error.message);
+    select.value=o.status;
+  }else{
+    o.status=select.value;
+    renderMetrics();
+  }
+};
+
+const print=node('button','طباعة');
+print.className='small soft';
+
+print.onclick=()=>{
+  const w=window.open('','_blank');
+  if(!w)return alert('اسمح بالنوافذ المنبثقة للطباعة');
+
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+
+  w.document.write(
+    '<html dir="rtl"><meta charset="utf-8"><title>وصل الطلب</title>'+
+    '<body style="font-family:Tahoma;padding:25px">'+
+    '<h2>'+esc(config.name)+'</h2>'+
+    '<h3>طلب #'+esc(o.id)+'</h3>'+
+    '<p>'+esc(o.customer_name)+' — '+esc(o.phone)+'</p>'+
+    '<p>'+esc(o.province+' / '+o.district+' / '+o.address)+'</p>'+
+    items.filter(x=>x.order_id===o.id)
+      .map(x=>'<p>'+esc(x.product_name)+' × '+esc(x.quantity)+
+      ' — '+esc(money(x.unit_price*x.quantity))+'</p>').join('')+
+    '<h3>'+esc(money(o.total))+'</h3></body></html>'
+  );
+
+  w.document.close();
+  w.focus();
+  w.print();
+};
+
+const wa=node('button','واتساب');
+wa.className='small soft';
+
+wa.onclick=()=>{
+  let n=o.phone.replace(/\D/g,'');
+
+  if(n.startsWith('07'))n='964'+n.slice(1);
+  else if(n.startsWith('7'))n='964'+n;
+
+  window.open(
+    'https://wa.me/'+n+'?text='+
+    encodeURIComponent(
+      'مرحباً '+o.customer_name+
+      '، طلبك رقم '+o.id+' حالته: '+o.status
+    ),
+    '_blank',
+    'noopener,noreferrer'
+  );
+};
+
+row.append(select,print,wa);
+card.append(row);
+root.append(card);
+}
+
+if(!root.children.length){
+  root.append(node('p','لا توجد طلبات'));
+}
+}  
 $('orderSearch').oninput=renderOrders;
 $('settingsForm').onsubmit=async e=>{e.preventDefault();const f=e.target,record={};for(const k of ['name','subtitle','instagram','tiktok','whatsapp'])record[k]=f.elements[k].value.trim();record.delivery_fee=Number(f.elements.delivery_fee.value);for(const k of ['instagram','tiktok'])if(record[k]&&!safeUrl(record[k]))return msg('settingsMsg','رابط '+k+' لازم يكون HTTPS');const {error}=await db.from('store_config').update(record).eq('id',1);if(error)return msg('settingsMsg',error.message);config={...config,...record};applyConfig();msg('settingsMsg','تم حفظ الإعدادات','success')};
 loadShop();
