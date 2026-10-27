@@ -9,6 +9,11 @@
 .payment-admin-box{padding:12px;border-radius:12px;background:#f1f5fa;border:1px solid #dce4ee;margin:12px 0;display:grid;gap:8px}
 .payment-admin-box .actions{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:600px){.banner-item img{width:100%}.banner-item .controls{margin:0}.checkline{font-size:14px}}
+
+/* آخر الطلبات: كل سطر قابل للضغط وينقل إلى الطلب نفسه */
+.recent-order-link{display:block;width:100%;text-align:right;padding:12px 14px;margin:7px 0;border:1px solid #dce4ee;border-radius:12px;background:#f4f7fc;color:#132944;font-size:14px;font-weight:600;cursor:pointer;transition:background .18s,border-color .18s}
+.recent-order-link:hover,.recent-order-link:focus-visible{background:#e8f3fb;border-color:#1b6f9b;outline:2px solid transparent}
+.orderCard.targeted-order{border:2px solid #c6a15b;background:#fffaf0;box-shadow:0 0 0 3px rgba(198,161,91,.18)}
 </style></head><body><header><div class="bar"><div class="brand"><img src="./assets/logo.jpg" alt="شعار الإبداع"><span id="brandName">الإبداع للنقش بالليزر</span></div><div class="actions"><a href="https://alabda3.github.io/store/" style="color:#1b6f9b;text-decoration:none;font-weight:bold">عرض المتجر ↗</a><button class="soft small hidden" id="homeBtn">المتجر</button><button class="soft small hidden" id="cartBtn">🛒 <span id="cartCount">0</span></button><button class="dark small hidden" id="adminBtn">الإدارة</button></div></div></header><main class="wrap">
 <section id="shopPage"><div class="hero"><h1 id="heroName">الإبداع للنقش بالليزر</h1><p id="subtitle">هدايا ومنتجات مميزة</p><div class="social" id="social"></div></div><div class="sectionTitle"><h2>منتجاتنا</h2><span class="muted" id="productCount"></span></div><input class="search" id="search" placeholder="ابحث في المنتجات أو التصنيفات"><div class="grid" id="products"></div></section>
 <section id="cartPage" class="hidden"><h2>سلة المشتريات</h2><div class="panel" id="cartItems"></div><div class="panel"><div class="totals"><span>مجموع المنتجات</span><span id="cartSubtotal"></span></div><div class="totals"><span>التوصيل</span><span id="cartDelivery"></span></div><div class="totals"><span>الإجمالي</span><span id="cartTotal"></span></div><button id="checkoutBtn">متابعة إلى تفاصيل التوصيل</button></div></section>
@@ -116,8 +121,24 @@ function renderMetrics(){
   $('metrics').replaceChildren(...stats.map(([name,value])=>{
     const m=node('div',name);m.className='metric';m.append(node('strong',value));return m;
   }));
-  $('recentOrders').replaceChildren(...orders.slice(0,5).map(o=>
-    node('p','#'+o.id+' — '+o.customer_name+' — '+o.status)));
+  $('recentOrders').replaceChildren(...orders.slice(0,5).map(o=>{
+    const link=node('button','#'+o.id+' — '+o.customer_name+' — '+o.status+'   ← عرض الطلب');
+    link.type='button';
+    link.className='recent-order-link';
+    link.onclick=()=>{
+      tab('orders');
+      $('orderSearch').value='';
+      renderOrders();
+      const card=document.getElementById('admin-order-'+o.id);
+      if(card){
+        card.classList.add('targeted-order');
+        card.tabIndex=-1;
+        card.focus({preventScroll:true});
+        card.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    };
+    return link;
+  }));
 }
 
 function renderExistingImages(p){
@@ -284,6 +305,7 @@ function renderOrders(){
   )){
     const card=node('div','');
     card.className='orderCard';
+    card.id='admin-order-'+o.id;
 
     card.append(node('h3','#'+o.id+' — '+o.customer_name));
 
