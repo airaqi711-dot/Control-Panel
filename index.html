@@ -63,26 +63,77 @@ const del = node('button', '🗑️ حذف');
 del.className = 'small danger';
 
 del.onclick = async () => {
-  if (!confirm('متأكد تريد تحذف المنتج: ' + p.name + '؟')) return;
-
+  if (!confirm('متأكد تريد تحذف المنتج وصوره نهائياً: ' + p.name + '؟')) return;
   del.disabled = true;
+  try {
+    // Delete the product record first; never remove images if this fails.
+    const { data, error } = await db.from('store_products')
+      .delete().eq('id', p.id).select('id');
+    if (error) throw error;
+    if (!data?.length) throw new Error('لم يتم حذف المنتج. تحقق من صلاحيات الحذف.');
 
-  const { data, error } = await db
-    .from('store_products')
-    .delete()
-    .eq('id', p.id)
-    .select('id');
+    products = products.filter(x => x.id !== p.id);
+    renderAdminProducts();
+    renderMetrics();
+    renderProducts();
 
-  if (error || !data?.length) {
-    alert('تعذر حذف المنتج: ' + (error?.message || 'تحقق من صلاحيات الحذف'));
+    // Only delete files owned by our product-images bucket.
+    const prefix = '/storage/v1/object/public/product-images/';
+    const paths = [...new Set([p.image_url, ...(Array.isArray(p.image_urls) ? p.image_urls : [])]
+      .filter(Boolean).map(url => {
+        try {
+          const u = new URL(url);
+          if (u.origin !== new URL(SUPABASE_URL).origin || !u.pathname.startsWith(prefix)) return null;
+          return decodeURIComponent(u.pathname.slice(prefix.length));
+        } catch { return null; }
+      }).filter(Boolean))];
+
+    if (!paths.length) {
+      alert('تم حذف المنتج بنجاح. لا توجد ملفات صور مرتبطة به للحذف.');
+      return;
+    }
+
+    // Avoid removing a file still referenced by another product.
+    const { data: remaining, error: checkError } = await db.from('store_products')
+      .select('image_url,image_urls');
+    if (checkError) {
+      alert('تم حذف المنتج، لكن لم نتمكن من التحقق من الصور المشتركة، فبقيت الصور في Storage. السبب: ' + checkError.message);
+      return;
+    }
+    const inUse = new Set((remaining || []).flatMap(x =>
+      [x.image_url, ...(Array.isArray(x.image_urls) ? x.image_urls : [])].filter(Boolean)
+    ));
+    const removable = paths.filter(path => {
+      const encoded = path.split('/').map(encodeURIComponent).join('/');
+      return ![...inUse].some(url => {
+        try {
+          const u = new URL(url);
+          return u.origin === new URL(SUPABASE_URL).origin &&
+            u.pathname.startsWith(prefix) &&
+            decodeURIComponent(u.pathname.slice(prefix.length)) === path;
+        } catch { return false; }
+      });
+    });
+    if (!removable.length) {
+      alert('تم حذف المنتج. صوره ما زالت مستخدمة بمنتجات أخرى، لذلك احتفظنا بها.');
+      return;
+    }
+    const { data: removed, error: storageError } = await db.storage
+      .from('product-images').remove(removable);
+    if (storageError) {
+      alert('تم حذف المنتج من قاعدة البيانات، لكن تعذر حذف صوره من Storage: ' + storageError.message);
+      return;
+    }
+    const deletedPaths = new Set((removed || []).map(x => x.name));
+    if (deletedPaths.size < removable.length) {
+      alert('تم حذف المنتج، لكن قد تكون بعض الصور باقية في Storage. راجع مجلد product-images.');
+    } else {
+      alert('تم حذف المنتج وصوره غير المشتركة نهائياً بنجاح.');
+    }
+  } catch (e) {
+    alert('تعذر إكمال الحذف: ' + e.message);
     del.disabled = false;
-    return;
   }
-
-  products = products.filter(x => x.id !== p.id);
-  renderAdminProducts();
-  renderMetrics();
-  alert('تم حذف المنتج بنجاح');
 };
 
 r.append(img,name,edit,del);
