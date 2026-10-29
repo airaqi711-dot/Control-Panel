@@ -14,12 +14,148 @@
 .recent-order-link{display:block;width:100%;text-align:right;padding:12px 14px;margin:7px 0;border:1px solid #dce4ee;border-radius:12px;background:#f4f7fc;color:#132944;font-size:14px;font-weight:600;cursor:pointer;transition:background .18s,border-color .18s}
 .recent-order-link:hover,.recent-order-link:focus-visible{background:#e8f3fb;border-color:#1b6f9b;outline:2px solid transparent}
 .orderCard.targeted-order{border:2px solid #c6a15b;background:#fffaf0;box-shadow:0 0 0 3px rgba(198,161,91,.18)}
+
+/* ===== Modern Dashboard · الإبداع — واجهة الإدارة ===== */
+:root{--admin-navy:#1c3168;--admin-teal:#1c8ca0;--admin-ink:#152a48;--admin-bg:#f3f7fc;--admin-border:#e2eaf3;--admin-muted:#73839b}
+body.admin-mode{background:var(--admin-bg);color:var(--admin-ink)}
+body.admin-mode header{background:#fff;border-bottom:1px solid #e6edf5;box-shadow:0 2px 14px #22385d09}
+body.admin-mode .bar{max-width:none;padding:10px clamp(16px,2.5vw,36px);min-height:68px}
+body.admin-mode .brand{color:var(--admin-ink)}
+body.admin-mode .wrap{padding:0;max-width:none}
+body.admin-mode .footer{background:#f3f7fc;margin:0;color:#8490a4;font-size:12px;padding:16px}
+body.admin-mode #adminPage{width:100%}
+body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25px 90px #182c4820}
+.adminShell{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:calc(100vh - 118px);align-items:start}
+.adminSidebar{background:linear-gradient(165deg,#172e62 0%,#10274f 65%,#0d233f 100%);color:white;padding:28px 15px 22px;position:sticky;top:68px;height:calc(100vh - 68px);display:flex;flex-direction:column;box-shadow:-10px 0 40px #07162a12;z-index:11}
+.sidebarIdentity{display:flex;align-items:center;gap:11px;padding:4px 10px 28px;border-bottom:1px solid #ffffff23;margin-bottom:22px}
+.sidebarIdentity strong{font-size:17px;display:block;color:#fff;line-height:1.6}
+.sidebarIdentity small{font-size:11px;color:#b7d2e4}
+.sidebarMark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,#23aaba,#1c8ca0);font-size:26px;color:white;flex:none}
+.sidebarSectionLabel{color:#91aecd;font-size:12px;font-weight:700;padding:0 13px 12px}
+.adminNav{display:grid;grid-template-columns:1fr;gap:7px;padding:0;overflow:visible}
+.adminNav button{width:100%;display:flex;align-items:center;gap:13px;background:transparent;border:1px solid transparent;color:#d7e7f5;text-align:right;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;transition:background .17s,color .17s,border .17s,transform .17s;white-space:normal}
+.adminNav button:hover{background:#ffffff13;color:white;transform:translateX(-2px)}
+.adminNav button.navActive{background:linear-gradient(100deg,#1c8ca0,#218ba4);color:white;border:1px solid #ffffff2c;box-shadow:0 9px 22px #02132b22}
+.navIcon{display:grid;place-items:center;width:25px;height:25px;flex:none;font-size:21px;font-weight:600;line-height:1}
+.sidebarBottom{margin-top:auto;border-top:1px solid #ffffff20;padding:18px 10px 0;color:#aec4df;font-size:11px;display:flex;align-items:center;gap:8px}
+.onlineDot{width:8px;height:8px;background:#5ddeaf;border-radius:100%;box-shadow:0 0 0 4px #5ddeaf20}
+.sidebarBackdrop{display:none}
+.adminMain{min-width:0;padding:26px clamp(18px,3vw,45px) 38px}
+.adminPanels{max-width:1500px;margin:auto}
+.adminTopbar{display:flex;gap:18px;align-items:center;justify-content:space-between;max-width:1500px;margin:0 auto 24px;flex-wrap:wrap}
+.pageHeading{display:flex;align-items:center;gap:12px}
+.pageHeading h1{margin:0;font-size:clamp(22px,2.3vw,28px);line-height:1.4;letter-spacing:-.45px;color:#172b4d}
+.pageHeading p{margin:2px 0 0;color:#8390a2;font-size:12px}
+.eyebrow{color:#1d8ba0;font-size:12px;letter-spacing:.1px;font-weight:700}
+.topbarTools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.currentDate{font-size:12px;color:#687a93;margin-inline:0 9px;white-space:nowrap}
+.addProductQuick{background:#1c8ca0;box-shadow:0 6px 12px #1c8ca027;color:#fff;border-radius:11px;padding:11px 15px;font-size:13px}
+.addProductQuick:hover{background:#146f82}
+.logoutButton{background:#fff;color:#c64858;border:1px solid #efdae0;border-radius:11px;padding:10px 14px;font-size:13px}
+.logoutButton:hover{background:#fff3f5}
+#mobileNavToggle{display:none;background:#1c3168;border-radius:10px;padding:7px 12px;font-size:22px}
+.overviewWelcome{background:linear-gradient(110deg,#1b3169,#223d7d 60%,#1d859d);color:#fff;display:flex;align-items:center;justify-content:space-between;border-radius:22px;padding:27px 30px;box-shadow:0 18px 34px #172b5b21;overflow:hidden;margin-bottom:22px;gap:10px}
+.overviewWelcome .eyebrow{color:#bcebf0}
+.overviewWelcome h2{margin:6px 0;font-size:clamp(19px,2vw,26px);color:#fff}
+.overviewWelcome p{margin:0;color:#d6e9f4;font-size:13px}
+.welcomeOrb{font-size:72px;line-height:1;color:#73d8dd;opacity:.42;transform:rotate(-12deg)}
+#adminContent .metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px}
+#adminContent .metric{border:1px solid var(--admin-border);border-radius:17px;background:#fff;padding:19px 20px;position:relative;min-height:133px;box-shadow:0 8px 22px #19365c09;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;overflow:hidden}
+#adminContent .metric::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:transparent}
+#adminContent .metric:nth-child(3n + 1)::before{background:#1c8ca0}
+#adminContent .metric:nth-child(3n + 2)::before{background:#3461ad}
+#adminContent .metric:nth-child(3n)::before{background:#e7ae53}
+.metricTitle{font-size:13px;color:#61738b;font-weight:700}
+.metricIcon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#e9f7f8;color:#147f93;font-size:19px;flex:none}
+.metricHead{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-bottom:12px}
+#adminContent .metric strong{font-size:clamp(18px,2vw,25px);line-height:1.4;margin:0;color:#1c3168;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:plaintext;text-align:right;width:100%}
+.dashboardLower{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:17px;align-items:start}
+#adminContent .panel{border-radius:19px;background:#fff;border:1px solid var(--admin-border);box-shadow:0 8px 24px #1b34580a;padding:22px;margin:0 0 17px}
+#adminContent .panel h3{color:#142c4f;margin:0 0 16px;font-size:18px}
+#adminContent .panelHeading{display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:13px}
+#adminContent .panelHeading h3{margin:0 0 4px}
+#adminContent .panelHeading p{margin:0;font-size:12px}
+.textAction{background:#ebf6fa;color:#197a8e;font-size:12px;white-space:nowrap;padding:9px 12px;border-radius:9px}
+.weeklyChart{height:218px;display:flex;align-items:stretch;gap:8px;padding-top:22px;border-bottom:1px solid #e5edf5}
+.chartDay{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;text-align:center}
+.chartBarWrap{height:153px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.chartBar{width:min(42px,73%);min-height:4px;border-radius:8px 8px 3px 3px;background:linear-gradient(0deg,#1c3168,#1c8ca0);transition:height .22s;position:relative}
+.chartBar[data-empty="true"]{background:#dce7f1}
+.chartBar:hover{filter:brightness(1.12)}
+.chartDayLabel{font-size:11px;color:#7c8ba0;white-space:nowrap}
+.chartValue{font-size:10px;font-weight:800;color:#24476a;white-space:nowrap}
+.recent-order-link{background:#f6f9fd;border:1px solid #e5edf5;color:#193651;border-radius:11px;padding:13px 15px;margin:8px 0;text-align:right;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.recent-order-link:after{content:'←';font-size:17px;color:#1c8ca0}
+.recent-order-link:hover,.recent-order-link:focus-visible{border-color:#1c8ca0;background:#eff9fb;outline:2px solid transparent}
+.orderCard{background:#fff;border:1px solid #e4eaf2;border-radius:15px;padding:18px;box-shadow:0 4px 14px #243b6108}
+.orderCard.targeted-order{border:2px solid #1c8ca0;background:#effcfe;box-shadow:0 0 0 4px #1c8ca020}
+#adminContent .panel .search{border:1px solid #dbe5ef;border-radius:12px;background:#f9fbff;outline:none}
+#adminContent .panel .search:focus,#adminContent .field input:focus,#adminContent .field select:focus,#adminContent .field textarea:focus{border-color:#1c8ca0;box-shadow:0 0 0 3px #1c8ca01b;outline:none}
+#adminContent .field input,#adminContent .field textarea,#adminContent .field select{background:#fbfdff;border:1px solid #d9e4ef;color:#1c3168}
+#adminContent .panel button:not(.danger):not(.soft):not(.textAction):not(.recent-order-link){background:#1c3168}
+#adminContent .panel button:not(.danger):not(.soft):not(.textAction):not(.recent-order-link):hover{background:#254a89}
+#adminContent .panel button.soft{background:#e8f3fa;color:#1b6686}
+#adminContent .panel button.danger{background:#be4056;color:#fff}
+#adminContent .payment-admin-box{background:#f5faff;border:1px solid #dce8f1}
+#adminContent .panel .formGrid{gap:17px}
+#adminContent .banner-item{border-color:#e3eaf2}
+#adminContent .muted{color:#78869c}
+#adminContent .savedPhoto{border-radius:12px}
+@media(max-width:1120px){.adminShell{grid-template-columns:220px minmax(0,1fr)}.adminSidebar{padding:20px 10px}.adminMain{padding:23px 19px}#adminContent .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboardLower{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .adminShell{display:block;min-height:calc(100vh - 115px)}
+ .adminSidebar{position:fixed;top:0;bottom:0;right:0;width:min(290px,85vw);height:100dvh;transform:translateX(105%);transition:transform .22s;z-index:60;padding-top:24px;box-shadow:-18px 0 40px #06173030}
+ .adminShell.navOpen .adminSidebar{transform:translateX(0)}
+ .sidebarBackdrop{display:block;position:fixed;inset:0;z-index:59;border:0;border-radius:0;background:#08172c8a;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s,visibility .22s}
+ .adminShell.navOpen .sidebarBackdrop{opacity:1;visibility:visible;pointer-events:auto}
+ #mobileNavToggle{display:inline-flex}
+ .adminMain{padding:18px 14px 30px}
+ .adminTopbar{gap:12px;margin-bottom:18px}
+ .topbarTools{width:100%;gap:8px}
+ .currentDate{display:none}
+ .overviewWelcome{padding:20px 18px;border-radius:16px}
+ .welcomeOrb{font-size:44px}
+ #adminContent .metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #adminContent .metric{min-height:120px;padding:14px}
+ #adminContent .metric strong{font-size:18px}
+ .metricIcon{width:33px;height:33px;font-size:16px}
+ .metricTitle{font-size:11px}
+ #adminContent .panel{padding:16px;border-radius:15px}
+ .weeklyChart{gap:3px}
+ .chartDayLabel,.chartValue{font-size:9px}
+ .sidebarBottom{margin-top:auto}
+}
+@media(max-width:380px){#adminContent .metrics{grid-template-columns:1fr}.topbarTools button{flex:1}.pageHeading h1{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.adminSidebar,.sidebarBackdrop,.chartBar{transition:none}}
+
 </style></head><body><header><div class="bar"><div class="brand"><img src="./assets/logo.jpg" alt="شعار الإبداع"><span id="brandName">الإبداع للنقش بالليزر</span></div><div class="actions"><a href="https://alabda3.github.io/store/" style="color:#1b6f9b;text-decoration:none;font-weight:bold">عرض المتجر ↗</a><button class="soft small hidden" id="homeBtn">المتجر</button><button class="soft small hidden" id="cartBtn">🛒 <span id="cartCount">0</span></button><button class="dark small hidden" id="adminBtn">الإدارة</button></div></div></header><main class="wrap">
 <section id="shopPage"><div class="hero"><h1 id="heroName">الإبداع للنقش بالليزر</h1><p id="subtitle">هدايا ومنتجات مميزة</p><div class="social" id="social"></div></div><div class="sectionTitle"><h2>منتجاتنا</h2><span class="muted" id="productCount"></span></div><input class="search" id="search" placeholder="ابحث في المنتجات أو التصنيفات"><div class="grid" id="products"></div></section>
 <section id="cartPage" class="hidden"><h2>سلة المشتريات</h2><div class="panel" id="cartItems"></div><div class="panel"><div class="totals"><span>مجموع المنتجات</span><span id="cartSubtotal"></span></div><div class="totals"><span>التوصيل</span><span id="cartDelivery"></span></div><div class="totals"><span>الإجمالي</span><span id="cartTotal"></span></div><button id="checkoutBtn">متابعة إلى تفاصيل التوصيل</button></div></section>
 <section id="checkoutPage" class="hidden"><h2>إتمام الطلب</h2><div class="steps"><div class="step on"><b>1</b>تفاصيل التوصيل</div><div class="step"><b>2</b>مراجعة الطلب</div><div class="step"><b>3</b>تم التأكيد</div></div><form id="checkoutForm" class="panel"><div class="formGrid"><label class="field">اسم الزبون *<input name="name" required minlength="2" maxlength="120"></label><label class="field">رقم الهاتف العراقي *<input name="phone" type="tel" required pattern="[0-9+ -]{10,20}" placeholder="07xxxxxxxxx"></label><label class="field">المحافظة *<select name="province" required><option value="">اختر المحافظة</option></select></label><label class="field">المدينة / المنطقة *<input name="district" required minlength="2" maxlength="120"></label><label class="field full">العنوان التفصيلي / أقرب نقطة دالة *<textarea name="address" required minlength="5" maxlength="500"></textarea></label><label class="field full">ملاحظات الطلب (اختياري)<textarea name="notes" maxlength="1000"></textarea></label></div><div class="notice">الدفع عند الاستلام. لا يحتاج الزبون إلى حساب. تأكيد الهاتف برسالة غير مفعّل حالياً.</div><button id="sendOrder" type="submit">مراجعة الطلب</button><div id="checkoutMsg"></div></form><div id="review" class="panel hidden"><h3>مراجعة الطلب قبل الإرسال</h3><div id="reviewDetails"></div><div class="row"><button id="confirmOrder">تأكيد وإرسال الطلب</button><button class="soft" id="editOrder">تعديل التفاصيل</button></div></div></section>
 <section id="donePage" class="hidden"><div class="panel" style="text-align:center;padding:55px 20px"><h1>✅ تم استلام طلبك</h1><p id="doneText"></p><button id="backShop">العودة للمتجر</button></div></section>
-<section id="adminPage" class="hidden"><div id="loginPanel" class="panel"><h2>تسجيل دخول الإدارة</h2><form id="loginForm" class="formGrid"><label class="field">البريد الإلكتروني<input type="email" name="email" required></label><label class="field">كلمة المرور<input type="password" name="password" required></label><div class="full"><button>دخول</button></div></form><div id="loginMsg"></div></div><div id="adminContent" class="hidden"><div class="row" style="justify-content:space-between"><h2>لوحة التحكم</h2><button class="soft" id="logout">تسجيل الخروج</button></div><nav class="adminNav"><button data-tab="overview">نظرة عامة</button><button data-tab="catalog">المنتجات</button><button data-tab="banners">إعلانات المتجر</button><button data-tab="orders">الطلبات</button><button data-tab="settings">إعدادات المتجر</button></nav><div id="overviewTab"><div class="metrics" id="metrics"></div><div class="panel"><h3>آخر الطلبات</h3><div id="recentOrders"></div></div></div><div id="catalogTab" class="hidden"><div class="panel"><h3 id="productFormTitle">إضافة منتج</h3><form id="productForm" class="formGrid"><input type="hidden" name="id"><label class="field">اسم المنتج<input name="name" required maxlength="150"></label><label class="field">السعر بالدينار<input name="price" type="number" min="0" max="100000000" required></label><label class="field">التصنيف<input name="category" required maxlength="80" value="عام"></label><label class="field">الصورة الرئيسية (اختياري عند التعديل)<input type="file" name="product_image" accept="image/jpeg,image/png,image/webp"></label><label class="field full">صور إضافية للمنتج (اختار أكثر من صورة)<input type="file" name="extra_images" accept="image/jpeg,image/png,image/webp" multiple><small class="muted">تگدر تختار عدة صور دفعة وحدة. الحد الأقصى 5 ميگابايت لكل صورة.</small></label><div class="field full"><strong>الصور الإضافية المحفوظة</strong><div id="existingImages" class="row"></div><small class="muted">حدد «حذف» تحت أي صورة حتى تنشال من معرض المنتج عند الحفظ.</small></div><label class="field full">وصف المنتج<textarea name="description" maxlength="1000"></textarea></label><label class="field">الحالة<select name="active"><option value="true">معروض</option><option value="false">مخفي</option></select></label><div class="full row"><button>حفظ المنتج</button><button type="button" class="soft" id="clearProduct">منتج جديد</button></div></form><div id="productMsg"></div></div><div class="panel"><h3>قائمة المنتجات</h3><div id="adminProducts"></div></div></div>
+<section id="adminPage" class="hidden"><div id="loginPanel" class="panel"><h2>تسجيل دخول الإدارة</h2><form id="loginForm" class="formGrid"><label class="field">البريد الإلكتروني<input type="email" name="email" required></label><label class="field">كلمة المرور<input type="password" name="password" required></label><div class="full"><button>دخول</button></div></form><div id="loginMsg"></div></div><div id="adminContent" class="hidden">
+  <div class="adminShell">
+    <aside class="adminSidebar" id="adminSidebar" aria-label="القائمة الرئيسية">
+      <div class="sidebarIdentity"><span class="sidebarMark">✦</span><div><strong>إدارة الإبداع</strong><small>لوحة إدارة المتجر</small></div></div>
+      <span class="sidebarSectionLabel">القائمة الرئيسية</span>
+      <nav class="adminNav" aria-label="أقسام الإدارة">
+        <button type="button" data-tab="overview" class="navActive"><span class="navIcon">◫</span><span>نظرة عامة</span></button>
+        <button type="button" data-tab="catalog"><span class="navIcon">▣</span><span>المنتجات</span></button>
+        <button type="button" data-tab="banners"><span class="navIcon">▧</span><span>إعلانات المتجر</span></button>
+        <button type="button" data-tab="orders"><span class="navIcon">▤</span><span>الطلبات</span></button>
+        <button type="button" data-tab="settings"><span class="navIcon">⚙</span><span>إعدادات المتجر</span></button>
+      </nav>
+      <div class="sidebarBottom"><span class="onlineDot"></span> متصل بنظام إدارة المتجر</div>
+    </aside>
+    <button type="button" class="sidebarBackdrop" id="sidebarBackdrop" aria-label="إغلاق القائمة" tabindex="-1"></button>
+    <div class="adminMain">
+      <div class="adminTopbar">
+        <div class="pageHeading"><button id="mobileNavToggle" type="button" aria-label="فتح قائمة الإدارة" aria-controls="adminSidebar" aria-expanded="false">☰</button><div><div class="eyebrow">الإبداع للنقش بالليزر / الإدارة</div><h1 id="adminSectionTitle">نظرة عامة</h1><p id="adminSectionSubtitle">أهلاً بيك، هاي آخر حركة متجرك</p></div></div>
+        <div class="topbarTools"><span id="adminCurrentDate" class="currentDate"></span><button type="button" class="addProductQuick" id="quickAddProduct">＋ إضافة منتج</button><button class="logoutButton" id="logout">تسجيل الخروج</button></div>
+      </div>
+      <div class="adminPanels">
+      <div id="overviewTab"><div class="overviewWelcome"><div><span class="eyebrow">لوحة متابعة المتجر</span><h2>كل تفاصيل متجرك بمكان واحد</h2><p>تابع المنتجات والطلبات والتحويلات وأجور التوصيل أولاً بأول.</p></div><div class="welcomeOrb" aria-hidden="true">✦</div></div><div class="metrics" id="metrics"></div>
+      <div class="dashboardLower"><div class="panel chartPanel"><div class="panelHeading"><div><h3>حركة الطلبات خلال 7 أيام</h3><p class="muted">قيمة الطلبات غير الملغية بالدينار العراقي</p></div></div><div id="weeklyChart" class="weeklyChart" aria-label="رسم الطلبات الأسبوعية"></div></div><div class="panel recentPanel"><div class="panelHeading"><div><h3>آخر الطلبات</h3><p class="muted">اضغط على الطلب حتى تفتح تفاصيله مباشرة</p></div><button type="button" id="allOrdersQuick" class="textAction">عرض الكل ←</button></div><div id="recentOrders"></div></div></div></div><div id="catalogTab" class="hidden"><div class="panel"><h3 id="productFormTitle">إضافة منتج</h3><form id="productForm" class="formGrid"><input type="hidden" name="id"><label class="field">اسم المنتج<input name="name" required maxlength="150"></label><label class="field">السعر بالدينار<input name="price" type="number" min="0" max="100000000" required></label><label class="field">التصنيف<input name="category" required maxlength="80" value="عام"></label><label class="field">الصورة الرئيسية (اختياري عند التعديل)<input type="file" name="product_image" accept="image/jpeg,image/png,image/webp"></label><label class="field full">صور إضافية للمنتج (اختار أكثر من صورة)<input type="file" name="extra_images" accept="image/jpeg,image/png,image/webp" multiple><small class="muted">تگدر تختار عدة صور دفعة وحدة. الحد الأقصى 5 ميگابايت لكل صورة.</small></label><div class="field full"><strong>الصور الإضافية المحفوظة</strong><div id="existingImages" class="row"></div><small class="muted">حدد «حذف» تحت أي صورة حتى تنشال من معرض المنتج عند الحفظ.</small></div><label class="field full">وصف المنتج<textarea name="description" maxlength="1000"></textarea></label><label class="field">الحالة<select name="active"><option value="true">معروض</option><option value="false">مخفي</option></select></label><div class="full row"><button>حفظ المنتج</button><button type="button" class="soft" id="clearProduct">منتج جديد</button></div></form><div id="productMsg"></div></div><div class="panel"><h3>قائمة المنتجات</h3><div id="adminProducts"></div></div></div>
 <div id="bannersTab" class="hidden">
   <div class="panel">
     <h3>🖼️ إعلانات المتجر</h3>
@@ -45,7 +181,7 @@
     <div class="full"><button type="submit">حفظ بيانات التحويل</button></div>
   </form>
   <div id="paymentSettingsMsg"></div>
-</div></div></div></section>
+</div></div></div></div></div></div></section>
 </main><footer class="footer">© الإبداع للنقش بالليزر</footer><script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL='https://fqqbqeopisbrcfpjkfad.supabase.co';
@@ -56,7 +192,7 @@ const $=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('en
 let products=[],cart=JSON.parse(localStorage.getItem('ibdaa_cart')||'{}'),config={name:'الإبداع للنقش بالليزر',subtitle:'هدايا ومنتجات مميزة',delivery_fee:0},orders=[],items=[],isAdmin=false;
 const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'?x.href:''}catch{return ''}};
 function msg(id,text,kind='error'){const e=$(id);e.textContent=text;e.className=text?'notice '+kind:''}
-function show(page){for(const id of ['shop','cart','checkout','done','admin'])$(id+'Page').classList.toggle('hidden',id!==page);window.scrollTo(0,0)}
+function show(page){for(const id of ['shop','cart','checkout','done','admin'])$(id+'Page').classList.toggle('hidden',id!==page);document.body.classList.toggle('admin-mode',page==='admin');window.scrollTo(0,0)}
 function saveCart(){localStorage.setItem('ibdaa_cart',JSON.stringify(cart));$('cartCount').textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
 function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e}
 function cartEntries(){return Object.entries(cart).map(([id,qty])=>({p:products.find(x=>x.id===Number(id)),qty})).filter(x=>x.p&&x.p.active)}
@@ -118,11 +254,17 @@ function renderMetrics(){
     ['تحويل إلكتروني مؤكد (شامل التوصيل)',money(confirmedTransfer)],
     ['تحويل إلكتروني بانتظار التأكيد',money(pendingTransfer)]
   ];
-  $('metrics').replaceChildren(...stats.map(([name,value])=>{
-    const m=node('div',name);m.className='metric';m.append(node('strong',value));return m;
+  const metricIcons=['▣','▤','◷','▥','◴','◈','⇢','◉','◎'];
+  $('metrics').replaceChildren(...stats.map(([name,value],index)=>{
+    const m=node('div','');m.className='metric';
+    const head=node('div','');head.className='metricHead';
+    const label=node('span',name);label.className='metricTitle';
+    const symbol=node('span',metricIcons[index]||'◉');symbol.className='metricIcon';symbol.setAttribute('aria-hidden','true');
+    head.append(label,symbol);m.append(head,node('strong',value));return m;
   }));
+  renderWeeklyOrderChart();
   $('recentOrders').replaceChildren(...orders.slice(0,5).map(o=>{
-    const link=node('button','#'+o.id+' — '+o.customer_name+' — '+o.status+'   ← عرض الطلب');
+    const link=node('button','#'+o.id+' — '+o.customer_name+' — '+o.status);
     link.type='button';
     link.className='recent-order-link';
     link.onclick=()=>{
@@ -138,6 +280,30 @@ function renderMetrics(){
       }
     };
     return link;
+  }));
+}
+
+
+function renderWeeklyOrderChart(){
+  const root=$('weeklyChart');if(!root)return;
+  const moneyValue=n=>Number(n||0);
+  const days=Array.from({length:7},(_,i)=>{
+    const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));
+    const value=orders.filter(o=>o.status!=='ملغي'&&new Date(o.created_at).toDateString()===d.toDateString())
+      .reduce((sum,o)=>sum+moneyValue(o.total),0);
+    return {d,value};
+  });
+  const max=Math.max(1,...days.map(x=>x.value));
+  root.replaceChildren(...days.map(({d,value})=>{
+    const day=node('div','');day.className='chartDay';
+    const wrap=node('div','');wrap.className='chartBarWrap';
+    const bar=node('div','');bar.className='chartBar';bar.style.height=(value?Math.max(5,(value/max)*100):2)+'%';
+    if(!value)bar.dataset.empty='true';
+    bar.title=d.toLocaleDateString('ar-IQ')+' — '+money(value);
+    wrap.append(bar);
+    const amount=node('div',value?(value>=1000?Math.round(value/1000)+' ألف':String(value)):'0');amount.className='chartValue';
+    const label=node('div',d.toLocaleDateString('ar-IQ',{weekday:'short'}));label.className='chartDayLabel';
+    day.append(amount,wrap,label);return day;
   }));
 }
 
@@ -434,7 +600,14 @@ $('settingsForm').onsubmit=async e=>{e.preventDefault();const f=e.target,record=
 // =================== الإعلانات وإثباتات التحويل ===================
 let banners=[],payments=[],paymentSettingsAdmin={enabled:false,provider_name:'ماستر كارد الرافدين',recipient_name:'',transfer_details:''};
 const defaultTab=tab;
-tab=function(t){for(const k of ['overview','catalog','banners','orders','settings'])$(k+'Tab').classList.toggle('hidden',k!==t)};
+tab=function(t){
+  const meta={overview:['نظرة عامة','أهلاً بيك، هاي آخر حركة متجرك'],catalog:['المنتجات','إدارة صور المنتجات والأسعار والحالة'],banners:['إعلانات المتجر','رتّب صور السلايدر وأضف إعلانات جديدة'],orders:['الطلبات','تابع الطلبات والتوصيل والتحويلات'],settings:['إعدادات المتجر','عدّل معلومات المتجر ووسائل الدفع']};
+  for(const k of ['overview','catalog','banners','orders','settings'])$(k+'Tab').classList.toggle('hidden',k!==t);
+  document.querySelectorAll('.adminNav [data-tab]').forEach(b=>{b.classList.toggle('navActive',b.dataset.tab===t);if(b.dataset.tab===t)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  const [title,subtitle]=meta[t]||meta.overview;
+  $('adminSectionTitle').textContent=title;$('adminSectionSubtitle').textContent=subtitle;
+  setSidebarOpen(false);
+};
 document.querySelector('[data-tab="banners"]').onclick=()=>tab('banners');
 
 const oldLoadAdmin=loadAdmin;
@@ -555,6 +728,19 @@ async function setPaymentStatus(payment,status){
   if(error)return alert('تعذر تحديث حالة الدفع: '+error.message);
   payment.payment_status=status;renderOrders();renderMetrics();
 }
+
+
+function setSidebarOpen(isOpen){
+  const shell=document.querySelector('.adminShell');if(!shell)return;
+  shell.classList.toggle('navOpen',isOpen);
+  const toggle=$('mobileNavToggle');if(toggle)toggle.setAttribute('aria-expanded',String(isOpen));
+}
+$('mobileNavToggle').onclick=()=>setSidebarOpen(!document.querySelector('.adminShell').classList.contains('navOpen'));
+$('sidebarBackdrop').onclick=()=>setSidebarOpen(false);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setSidebarOpen(false)});
+$('quickAddProduct').onclick=()=>{tab('catalog');$('productForm').elements.name.focus({preventScroll:true});$('productForm').scrollIntoView({behavior:'smooth',block:'start'})};
+$('allOrdersQuick').onclick=()=>tab('orders');
+$('adminCurrentDate').textContent=new Date().toLocaleDateString('ar-IQ',{weekday:'long',month:'long',day:'numeric'});
 
 loadShop();
 show('admin');checkAuth();
