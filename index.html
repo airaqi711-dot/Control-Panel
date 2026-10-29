@@ -169,6 +169,12 @@ body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25
 .staffOrderFoot strong{font-size:18px;color:#1c3168}
 .staffAccept{background:#1c8ca0;color:#fff;border-radius:11px;padding:12px 20px}
 .staffAccept:disabled{opacity:.55;cursor:wait}
+/* زر واتساب يفتح رسالة جاهزة فقط، ما يثبت الطلب ولا يرسل بالنيابة عن الموظف */
+.staffOrderActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.staffWhatsapp{display:inline-flex;align-items:center;justify-content:center;padding:12px 17px;border-radius:11px;background:#158d58;color:white;text-decoration:none;font-weight:800;font-size:14px;min-height:46px;transition:background .2s}
+.staffWhatsapp:hover,.staffWhatsapp:focus-visible{background:#0f7548;color:#fff}
+.staffWhatsappUnavailable{display:inline-flex;align-items:center;padding:10px 12px;border-radius:11px;background:#fff3f2;color:#a44946;font-size:12px;font-weight:700}
+@media(max-width:640px){.staffOrderActions{width:100%}.staffOrderActions .staffWhatsapp,.staffOrderActions .staffAccept{flex:1;text-align:center}}
 .staffMessage{padding:13px 16px;border-radius:12px;margin:12px 0;background:#eaf6f9;color:#145b6b}
 .staffMessage.error{background:#ffeded;color:#9a2435}
 .staffEmpty{text-align:center;background:#fff;border:1px solid #e1e9f3;border-radius:16px;padding:38px 15px;color:#73839a;margin-top:15px}
@@ -232,7 +238,7 @@ body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25
 <section id="staffPage" class="hidden" aria-label="واجهة الموظف الخاصة بالطلبات">
   <div class="staffShell">
     <div class="staffTop">
-      <div><span class="staffChip">حساب موظف • صلاحية تثبيت فقط</span><h1>طلبات المتجر</h1><p>تابع الطلبات الواردة وثبّت الطلبات التي بانتظار القبول.</p></div>
+      <div><span class="staffChip">حساب موظف • صلاحية تثبيت فقط</span><h1>طلبات المتجر</h1><p>راسل الزبون على واتساب، وبعد ما يرد بالتأكيد تگدر تثبّت طلبه.</p></div>
       <div class="staffTopButtons"><button type="button" class="staffRefresh" id="staffRefresh">↻ تحديث الطلبات</button><button type="button" class="staffLogout" id="staffLogout">تسجيل الخروج</button></div>
     </div>
     <div class="staffToolbar"><input type="search" id="staffSearch" placeholder="بحث برقم الطلب أو اسم الزبون أو الهاتف" aria-label="البحث عن طلب"><label><input type="checkbox" id="staffOnlyPending" checked> عرض الطلبات قيد الانتظار فقط</label></div>
@@ -893,6 +899,34 @@ async function loadStaffOrders(){
   }else staffNotice('');
   renderStaffOrders();
 }
+// تحويل أرقام الجوال العراقية إلى صيغة دولية مقبولة من wa.me
+function staffWhatsAppNumber(raw){
+  let n=String(raw??'')
+    .replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-0x0660))
+    .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-0x06F0))
+    .replace(/\D/g,'');
+  if(n.startsWith('00964'))n=n.slice(2);
+  else if(n.startsWith('07'))n='964'+n.slice(1);
+  else if(n.startsWith('7'))n='964'+n;
+  // رقم عراقي محمول: 07xxxxxxxxx / +9647xxxxxxxxx
+  return /^9647\d{9}$/.test(n)?n:'';
+}
+function staffWhatsAppMessage(order){
+  const area=[order.province,order.district,order.address].filter(Boolean).join(' / ');
+  return [
+    'السلام عليكم ورحمة الله 🌹',
+    'أهلاً وسهلاً '+(order.customer_name||'عزيزنا الزبون'),
+    'وياكم متجر الإبداع للنقش بالليزر.',
+    '',
+    '📦 رقم الطلب: #'+order.id,
+    '💰 المبلغ النهائي شامل التوصيل: '+money(order.total),
+    '📍 عنوان التوصيل: '+(area||'غير محدد'),
+    '',
+    'يرجى الرد بكلمة «تأكيد» إذا تفاصيل الطلب والعنوان صحيحة، أو إرسال التعديل المطلوب.',
+    'شكراً لثقتكم بينا ❤️'
+  ].join('\n');
+}
+
 function renderStaffOrders(){
   const root=$('staffOrdersList');root.replaceChildren();
   const q=$('staffSearch').value.trim().toLocaleLowerCase();
@@ -937,6 +971,22 @@ function renderStaffOrders(){
     else itemBox.append(node('p','تفاصيل المنتجات غير محمّلة. راجع المدير.'));
     const foot=node('div','');foot.className='staffOrderFoot';foot.append(node('strong','الإجمالي: '+money(o.total)));
     if(o.status==='قيد الانتظار'){
+      const actions=node('div','');actions.className='staffOrderActions';
+      const waNumber=staffWhatsAppNumber(o.phone);
+      if(waNumber){
+        const wa=document.createElement('a');
+        wa.className='staffWhatsapp';
+        wa.textContent='💬 تأكيد عبر واتساب';
+        wa.href='https://wa.me/'+waNumber+'?text='+encodeURIComponent(staffWhatsAppMessage(o));
+        wa.target='_blank';
+        wa.rel='noopener noreferrer';
+        wa.title='يفتح واتساب برسالة جاهزة؛ لازم الموظف يضغط إرسال ويتأكد من رد الزبون قبل التثبيت';
+        actions.append(wa);
+      }else{
+        const unavailable=node('span','رقم الهاتف غير صالح لفتح واتساب');
+        unavailable.className='staffWhatsappUnavailable';
+        actions.append(unavailable);
+      }
       const accept=node('button','✓ تثبيت الطلب');accept.type='button';accept.className='staffAccept';
       accept.onclick=async()=>{
         if(!confirm('تأكيد تثبيت الطلب رقم '+o.id+' وتحويله إلى «مقبول»؟'))return;
@@ -955,7 +1005,8 @@ function renderStaffOrders(){
         }catch(e){staffNotice('تعذر تثبيت الطلب: '+e.message,true)}
         finally{accept.disabled=false;accept.textContent='✓ تثبيت الطلب'}
       };
-      foot.append(accept);
+      actions.append(accept);
+      foot.append(actions);
     }
     card.append(head,details,itemBox,foot);root.append(card);
   }
