@@ -153,6 +153,17 @@ body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25
 .staffDetails span{display:block;color:#76859b;font-size:12px;margin-bottom:4px}
 .staffDetails .full{grid-column:1/-1}
 .staffItems{padding:12px 15px;background:#f5f9fc;border-radius:12px;display:grid;gap:6px;font-size:13px;color:#263b56}
+/* صور المنتجات في قائمة طلبات الموظف */
+.staffItemRow{display:flex;align-items:center;gap:13px;padding:10px 0;border-bottom:1px solid #e1eaf2;min-width:0}
+.staffItemRow:last-child{border-bottom:0}
+.staffItemPhoto,.staffItemPhotoEmpty{width:78px;height:78px;border-radius:12px;flex:none;overflow:hidden;background:#e6eef5;border:1px solid #dbe6ef;display:grid;place-items:center}
+.staffItemPhoto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
+.staffItemPhoto:hover img{transform:scale(1.06)}
+.staffItemPhotoEmpty{color:#8594a7;font-size:28px}
+.staffItemInfo{flex:1;min-width:0;display:grid;gap:6px;overflow-wrap:anywhere}
+.staffItemInfo strong{color:#1c3168;font-size:14px}
+.staffItemInfo .muted{font-size:12px}
+.staffItemInfo .itemTotal{color:#152a48;font-weight:800;font-size:13px}
 .staffItems p{margin:3px 0}
 .staffOrderFoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:15px}
 .staffOrderFoot strong{font-size:18px;color:#1c3168}
@@ -237,7 +248,7 @@ const SUPABASE_ANON_KEY='sb_publishable_NK20CJCn-y62ySKqD-Lsrg_YqBBJLqg';
 const ready=!SUPABASE_URL.startsWith('YOUR_')&&!SUPABASE_ANON_KEY.startsWith('YOUR_');
 const db=ready?createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
 const $=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('en-US')+' IQD';
-let isStaff=false,staffOrders=[],staffItems=[];
+let isStaff=false,staffOrders=[],staffItems=[],staffImages=[];
 let products=[],cart=JSON.parse(localStorage.getItem('ibdaa_cart')||'{}'),config={name:'الإبداع للنقش بالليزر',subtitle:'هدايا ومنتجات مميزة',delivery_fee:0},orders=[],items=[],isAdmin=false;
 const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'?x.href:''}catch{return ''}};
 function msg(id,text,kind='error'){const e=$(id);e.textContent=text;e.className=text?'notice '+kind:''}
@@ -866,16 +877,21 @@ function staffNotice(text='',error=false){
 async function loadStaffOrders(){
   if(!isStaff)return;
   staffNotice('جاري تحميل الطلبات...');
-  const [ord,lines]=await Promise.all([
+  const [ord,lines,images]=await Promise.all([
     db.from('store_orders').select('id,created_at,customer_name,phone,province,district,address,notes,total,status').order('created_at',{ascending:false}).limit(500),
-    db.from('store_order_items').select('order_id,product_name,quantity,unit_price').limit(2000)
+    db.from('store_order_items').select('order_id,product_id,product_name,quantity,unit_price').limit(2000),
+    // صور المنتجات تُجلب بدالة مقيدة بحساب الموظف؛ لا تمنحه وصولاً عاماً إلى جدول المنتجات.
+    db.rpc('store_staff_order_images')
   ]);
   if(ord.error||lines.error){
     staffNotice('ما گدرنا نحمّل الطلبات. تأكد من صلاحيات SQL: '+(ord.error||lines.error).message,true);
     $('staffOrdersList').replaceChildren();return;
   }
-  staffOrders=ord.data||[];staffItems=lines.data||[];
-  staffNotice('');renderStaffOrders();
+  staffOrders=ord.data||[];staffItems=lines.data||[];staffImages=images.data||[];
+  if(images.error){
+    staffNotice('الطلبات اشتغلت لكن تحميل صور المنتجات يحتاج تشغيل ملف SQL الخاص بالصور: '+images.error.message,true);
+  }else staffNotice('');
+  renderStaffOrders();
 }
 function renderStaffOrders(){
   const root=$('staffOrdersList');root.replaceChildren();
@@ -902,7 +918,22 @@ function renderStaffOrders(){
     }
     const itemBox=node('div','');itemBox.className='staffItems';
     const orderLines=staffItems.filter(x=>String(x.order_id)===String(o.id));
-    if(orderLines.length)for(const it of orderLines)itemBox.append(node('p',it.product_name+' × '+it.quantity+' — '+money(Number(it.unit_price||0)*Number(it.quantity||0))));
+    if(orderLines.length)for(const it of orderLines){
+      const line=node('div','');line.className='staffItemRow';
+      const photo=staffImages.find(img=>String(img.order_id)===String(o.id)&&String(img.product_id)===String(it.product_id));
+      const url=safeUrl(photo?.image_url);
+      const missing=()=>{const empty=node('span','▧');empty.className='staffItemPhotoEmpty';empty.title='صورة المنتج غير متوفرة';return empty};
+      if(url){
+        const link=document.createElement('a');link.className='staffItemPhoto';link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.title='عرض صورة المنتج بالحجم الكامل';
+        const img=document.createElement('img');img.src=url;img.alt='صورة '+it.product_name;img.loading='lazy';
+        img.onerror=()=>link.replaceWith(missing());link.append(img);line.append(link);
+      }else line.append(missing());
+      const info=node('div','');info.className='staffItemInfo';
+      const title=node('strong',it.product_name);
+      const quantity=node('span','الكمية: '+it.quantity+' × '+money(it.unit_price));quantity.className='muted';
+      const total=node('span','المجموع: '+money(Number(it.unit_price||0)*Number(it.quantity||0)));total.className='itemTotal';
+      info.append(title,quantity,total);line.append(info);itemBox.append(line);
+    }
     else itemBox.append(node('p','تفاصيل المنتجات غير محمّلة. راجع المدير.'));
     const foot=node('div','');foot.className='staffOrderFoot';foot.append(node('strong','الإجمالي: '+money(o.total)));
     if(o.status==='قيد الانتظار'){
@@ -935,7 +966,7 @@ $('staffRefresh').onclick=()=>loadStaffOrders();
 $('staffLogout').onclick=async()=>{
   const {error}=await db.auth.signOut();
   if(error)return staffNotice('تعذر تسجيل الخروج: '+error.message,true);
-  isStaff=false;staffOrders=[];staffItems=[];
+  isStaff=false;staffOrders=[];staffItems=[];staffImages=[];
   show('admin');await checkAuth();
 };
 
