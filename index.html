@@ -128,6 +128,41 @@ body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25
 @media(max-width:380px){#adminContent .metrics{grid-template-columns:1fr}.topbarTools button{flex:1}.pageHeading h1{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.adminSidebar,.sidebarBackdrop,.chartBar{transition:none}}
 
+/* حساب الموظف: شاشة الطلبات فقط، بنفس هوية لوحة التحكم */
+.staffShell{max-width:1120px;margin:24px auto 45px;padding:0 18px;direction:rtl}
+.staffTop{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.staffTop h1{color:#1c3168;font-size:clamp(22px,3vw,30px);margin:5px 0}
+.staffTop p{color:#65758c;margin:0;font-size:14px}
+.staffChip{display:inline-block;border-radius:99px;padding:5px 12px;background:#e5f6f7;color:#147b8d;font-size:12px;font-weight:800}
+.staffTopButtons{display:flex;gap:9px;flex-wrap:wrap}
+.staffTopButtons button{padding:11px 16px;border-radius:11px}
+.staffRefresh{background:#1c8ca0;color:#fff}
+.staffLogout{background:#fff;color:#aa4051;border:1px solid #edcdd3}
+.staffToolbar{background:white;border:1px solid #e2eaf3;border-radius:16px;padding:15px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;box-shadow:0 8px 25px #1526440a}
+.staffToolbar input[type="search"]{min-width:210px;flex:1;border:1px solid #d6e4f0;border-radius:11px;padding:13px 14px;background:#f7fbff;color:#152a48;outline-color:#1c8ca0}
+.staffToolbar label{display:flex;align-items:center;gap:9px;font-size:13px;color:#1c3168;cursor:pointer}
+.staffToolbar input[type="checkbox"]{width:19px;height:19px;accent-color:#1c8ca0}
+.staffSummary{font-size:13px;color:#647890;margin:15px 1px}
+.staffOrder{background:#fff;border:1px solid #e1eaf3;border-radius:18px;box-shadow:0 8px 22px #142e4f0c;padding:21px;margin:15px 0}
+.staffOrderHead{display:flex;justify-content:space-between;align-items:start;gap:15px;flex-wrap:wrap;padding-bottom:13px;border-bottom:1px solid #e8eef6}
+.staffOrderHead strong{font-size:19px;color:#1c3168}
+.staffStatus{background:#eef7f9;color:#157b90;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}
+.staffStatus.done{background:#eef1f6;color:#6a7a93}
+.staffDetails{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;padding:17px 0}
+.staffDetails p{margin:0;color:#263b56;font-size:14px;overflow-wrap:anywhere}
+.staffDetails span{display:block;color:#76859b;font-size:12px;margin-bottom:4px}
+.staffDetails .full{grid-column:1/-1}
+.staffItems{padding:12px 15px;background:#f5f9fc;border-radius:12px;display:grid;gap:6px;font-size:13px;color:#263b56}
+.staffItems p{margin:3px 0}
+.staffOrderFoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:15px}
+.staffOrderFoot strong{font-size:18px;color:#1c3168}
+.staffAccept{background:#1c8ca0;color:#fff;border-radius:11px;padding:12px 20px}
+.staffAccept:disabled{opacity:.55;cursor:wait}
+.staffMessage{padding:13px 16px;border-radius:12px;margin:12px 0;background:#eaf6f9;color:#145b6b}
+.staffMessage.error{background:#ffeded;color:#9a2435}
+.staffEmpty{text-align:center;background:#fff;border:1px solid #e1e9f3;border-radius:16px;padding:38px 15px;color:#73839a;margin-top:15px}
+@media(max-width:640px){.staffShell{margin:15px auto 35px;padding:0 12px}.staffDetails{grid-template-columns:1fr}.staffOrder{padding:15px}.staffTopButtons{width:100%}.staffTopButtons button{flex:1}.staffToolbar input[type="search"]{min-width:100%}}
+
 </style></head><body><header><div class="bar"><div class="brand"><img src="./assets/logo.jpg" alt="شعار الإبداع"><span id="brandName">الإبداع للنقش بالليزر</span></div><div class="actions"><a href="https://alabda3.github.io/store/" style="color:#1b6f9b;text-decoration:none;font-weight:bold">عرض المتجر ↗</a><button class="soft small hidden" id="homeBtn">المتجر</button><button class="soft small hidden" id="cartBtn">🛒 <span id="cartCount">0</span></button><button class="dark small hidden" id="adminBtn">الإدارة</button></div></div></header><main class="wrap">
 <section id="shopPage"><div class="hero"><h1 id="heroName">الإبداع للنقش بالليزر</h1><p id="subtitle">هدايا ومنتجات مميزة</p><div class="social" id="social"></div></div><div class="sectionTitle"><h2>منتجاتنا</h2><span class="muted" id="productCount"></span></div><input class="search" id="search" placeholder="ابحث في المنتجات أو التصنيفات"><div class="grid" id="products"></div></section>
 <section id="cartPage" class="hidden"><h2>سلة المشتريات</h2><div class="panel" id="cartItems"></div><div class="panel"><div class="totals"><span>مجموع المنتجات</span><span id="cartSubtotal"></span></div><div class="totals"><span>التوصيل</span><span id="cartDelivery"></span></div><div class="totals"><span>الإجمالي</span><span id="cartTotal"></span></div><button id="checkoutBtn">متابعة إلى تفاصيل التوصيل</button></div></section>
@@ -182,6 +217,19 @@ body.admin-mode #loginPanel{max-width:650px;margin:6vh auto 24px;box-shadow:0 25
   </form>
   <div id="paymentSettingsMsg"></div>
 </div></div></div></div></div></div></section>
+
+<section id="staffPage" class="hidden" aria-label="واجهة الموظف الخاصة بالطلبات">
+  <div class="staffShell">
+    <div class="staffTop">
+      <div><span class="staffChip">حساب موظف • صلاحية تثبيت فقط</span><h1>طلبات المتجر</h1><p>تابع الطلبات الواردة وثبّت الطلبات التي بانتظار القبول.</p></div>
+      <div class="staffTopButtons"><button type="button" class="staffRefresh" id="staffRefresh">↻ تحديث الطلبات</button><button type="button" class="staffLogout" id="staffLogout">تسجيل الخروج</button></div>
+    </div>
+    <div class="staffToolbar"><input type="search" id="staffSearch" placeholder="بحث برقم الطلب أو اسم الزبون أو الهاتف" aria-label="البحث عن طلب"><label><input type="checkbox" id="staffOnlyPending" checked> عرض الطلبات قيد الانتظار فقط</label></div>
+    <div id="staffMessage" role="status" aria-live="polite"></div>
+    <div id="staffSummary" class="staffSummary"></div>
+    <div id="staffOrdersList"></div>
+  </div>
+</section>
 </main><footer class="footer">© الإبداع للنقش بالليزر</footer><script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL='https://fqqbqeopisbrcfpjkfad.supabase.co';
@@ -189,10 +237,11 @@ const SUPABASE_ANON_KEY='sb_publishable_NK20CJCn-y62ySKqD-Lsrg_YqBBJLqg';
 const ready=!SUPABASE_URL.startsWith('YOUR_')&&!SUPABASE_ANON_KEY.startsWith('YOUR_');
 const db=ready?createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
 const $=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('en-US')+' IQD';
+let isStaff=false,staffOrders=[],staffItems=[];
 let products=[],cart=JSON.parse(localStorage.getItem('ibdaa_cart')||'{}'),config={name:'الإبداع للنقش بالليزر',subtitle:'هدايا ومنتجات مميزة',delivery_fee:0},orders=[],items=[],isAdmin=false;
 const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'?x.href:''}catch{return ''}};
 function msg(id,text,kind='error'){const e=$(id);e.textContent=text;e.className=text?'notice '+kind:''}
-function show(page){for(const id of ['shop','cart','checkout','done','admin'])$(id+'Page').classList.toggle('hidden',id!==page);document.body.classList.toggle('admin-mode',page==='admin');window.scrollTo(0,0)}
+function show(page){for(const id of ['shop','cart','checkout','done','admin','staff'])$(id+'Page').classList.toggle('hidden',id!==page);document.body.classList.toggle('admin-mode',(page==='admin'||page==='staff'));window.scrollTo(0,0)}
 function saveCart(){localStorage.setItem('ibdaa_cart',JSON.stringify(cart));$('cartCount').textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
 function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e}
 
@@ -266,7 +315,31 @@ $('checkoutForm').onsubmit=e=>{e.preventDefault();if(!cartEntries().length)retur
 $('editOrder').onclick=()=>{$('review').classList.add('hidden');$('checkoutForm').classList.remove('hidden')};
 $('confirmOrder').onclick=async()=>{if(!db)return alert('لم يتم ربط Supabase');const f=new FormData($('checkoutForm'));const b=$('confirmOrder');b.disabled=true;try{const {data,error}=await db.rpc('store_checkout',{p_name:f.get('name'),p_phone:f.get('phone'),p_province:f.get('province'),p_district:f.get('district'),p_address:f.get('address'),p_notes:f.get('notes'),p_items:cartEntries().map(x=>({id:x.p.id,qty:x.qty}))});if(error)throw error;cart={};saveCart();$('checkoutForm').reset();$('checkoutForm').classList.remove('hidden');$('review').classList.add('hidden');$('doneText').textContent='رقم طلبك: '+data+' — راح نتواصل وياك لتأكيد التفاصيل.';show('done')}catch(e){alert('تعذر إرسال الطلب: '+e.message)}finally{b.disabled=false}};
 $('adminBtn').onclick=async()=>{show('admin');await checkAuth()};
-async function checkAuth(){if(!db)return msg('loginMsg','اربط Supabase أولاً');const {data:{user}}=await db.auth.getUser();isAdmin=false;if(user){const {data}=await db.rpc('store_is_admin');isAdmin=data===true}$('loginPanel').classList.toggle('hidden',isAdmin);$('adminContent').classList.toggle('hidden',!isAdmin);if(isAdmin)await loadAdmin();else if(user)msg('loginMsg','هذا الحساب لا يمتلك صلاحية الإدارة')}
+async function checkAuth(){
+  if(!db){show('admin');return msg('loginMsg','اربط Supabase أولاً')}
+  const {data:authData,error:authError}=await db.auth.getUser();
+  const user=authData?.user;
+  isAdmin=false;isStaff=false;
+  if(authError){console.warn('Auth error:',authError.message)}
+  if(user){
+    const {data:admin,error:adminError}=await db.rpc('store_is_admin');
+    if(adminError){show('admin');msg('loginMsg','تعذر التحقق من صلاحية المدير: '+adminError.message);return}
+    isAdmin=admin===true;
+    if(!isAdmin){
+      const {data:staff,error:staffError}=await db.rpc('store_is_staff');
+      if(staffError){show('admin');msg('loginMsg','التحقق من صلاحية الموظف يحتاج تثبيت ملف SQL: '+staffError.message);return}
+      isStaff=staff===true;
+    }
+  }
+  $('loginPanel').classList.toggle('hidden',isAdmin||isStaff);
+  $('adminContent').classList.toggle('hidden',!isAdmin);
+  if(isAdmin){show('admin');await loadAdmin()}
+  else if(isStaff){products=[];orders=[];items=[];payments=[];banners=[];show('staff');await loadStaffOrders()}
+  else{
+    show('admin');
+    msg('loginMsg',user?'هذا الحساب غير مضاف كمدير أو موظف. تواصل مع صاحب المتجر.':'');
+  }
+}
 $('loginForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);const {error}=await db.auth.signInWithPassword({email:f.get('email'),password:f.get('password')});if(error)return msg('loginMsg',error.message);await checkAuth()};$('logout').onclick=async()=>{await db.auth.signOut();await checkAuth()};
 function tab(t){for(const k of ['overview','catalog','orders','settings'])$(k+'Tab').classList.toggle('hidden',k!==t)}document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 async function loadAdmin(){const [p,o,i,c]=await Promise.all([db.from('store_products').select('*').order('created_at',{ascending:false}),db.from('store_orders').select('*').order('created_at',{ascending:false}).limit(500),db.from('store_order_items').select('*').limit(2000),db.from('store_config').select('*').eq('id',1).single()]);if(p.error||o.error||i.error){alert('خطأ في صلاحيات الإدارة: '+(p.error||o.error||i.error).message);return}products=p.data||[];orders=o.data||[];items=i.data||[];if(c.data)config=c.data;renderMetrics();renderAdminProducts();renderOrders();const form=$('settingsForm');for(const key of ['name','subtitle','instagram','tiktok','whatsapp','delivery_fee'])form.elements[key].value=config[key]??''}
@@ -783,6 +856,88 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')setSidebarOpen(false
 $('quickAddProduct').onclick=()=>{tab('catalog');$('productForm').elements.name.focus({preventScroll:true});$('productForm').scrollIntoView({behavior:'smooth',block:'start'})};
 $('allOrdersQuick').onclick=()=>tab('orders');
 $('adminCurrentDate').textContent=new Date().toLocaleDateString('ar-IQ',{weekday:'long',month:'long',day:'numeric'});
+
+
+// ===== واجهة الموظف: قراءة الطلبات وتثبيت «قيد الانتظار» فقط =====
+function staffNotice(text='',error=false){
+  const el=$('staffMessage');el.textContent=text;
+  el.className=text?'staffMessage'+(error?' error':''):'';
+}
+async function loadStaffOrders(){
+  if(!isStaff)return;
+  staffNotice('جاري تحميل الطلبات...');
+  const [ord,lines]=await Promise.all([
+    db.from('store_orders').select('id,created_at,customer_name,phone,province,district,address,notes,total,status').order('created_at',{ascending:false}).limit(500),
+    db.from('store_order_items').select('order_id,product_name,quantity,unit_price').limit(2000)
+  ]);
+  if(ord.error||lines.error){
+    staffNotice('ما گدرنا نحمّل الطلبات. تأكد من صلاحيات SQL: '+(ord.error||lines.error).message,true);
+    $('staffOrdersList').replaceChildren();return;
+  }
+  staffOrders=ord.data||[];staffItems=lines.data||[];
+  staffNotice('');renderStaffOrders();
+}
+function renderStaffOrders(){
+  const root=$('staffOrdersList');root.replaceChildren();
+  const q=$('staffSearch').value.trim().toLocaleLowerCase();
+  const onlyPending=$('staffOnlyPending').checked;
+  const selected=staffOrders.filter(o=>(!onlyPending||o.status==='قيد الانتظار')&&
+    [o.id,o.customer_name,o.phone,o.district].some(v=>String(v||'').toLocaleLowerCase().includes(q)));
+  $('staffSummary').textContent='عدد الطلبات المعروضة: '+selected.length+' | الطلبات بانتظار القبول: '+staffOrders.filter(o=>o.status==='قيد الانتظار').length;
+  if(!selected.length){const empty=node('div','لا توجد طلبات مطابقة حالياً.');empty.className='staffEmpty';root.append(empty);return;}
+  for(const o of selected){
+    const card=node('article','');card.className='staffOrder';
+    const head=node('div','');head.className='staffOrderHead';
+    const name=node('strong','طلب #'+o.id+' — '+o.customer_name);
+    const status=node('span',o.status);status.className='staffStatus'+(o.status==='قيد الانتظار'?'':' done');
+    head.append(name,status);
+    const details=node('div','');details.className='staffDetails';
+    for(const [label,value,full] of [
+      ['رقم الهاتف',o.phone,false],['تاريخ الطلب',new Date(o.created_at).toLocaleString('ar-IQ'),false],
+      ['عنوان التوصيل',[o.province,o.district,o.address].filter(Boolean).join(' / '),true],
+      ['ملاحظات الزبون',o.notes||'—',true]
+    ]){
+      const row=node('p','');if(full)row.className='full';
+      row.append(node('span',label),node('b',value||'—'));details.append(row);
+    }
+    const itemBox=node('div','');itemBox.className='staffItems';
+    const orderLines=staffItems.filter(x=>String(x.order_id)===String(o.id));
+    if(orderLines.length)for(const it of orderLines)itemBox.append(node('p',it.product_name+' × '+it.quantity+' — '+money(Number(it.unit_price||0)*Number(it.quantity||0))));
+    else itemBox.append(node('p','تفاصيل المنتجات غير محمّلة. راجع المدير.'));
+    const foot=node('div','');foot.className='staffOrderFoot';foot.append(node('strong','الإجمالي: '+money(o.total)));
+    if(o.status==='قيد الانتظار'){
+      const accept=node('button','✓ تثبيت الطلب');accept.type='button';accept.className='staffAccept';
+      accept.onclick=async()=>{
+        if(!confirm('تأكيد تثبيت الطلب رقم '+o.id+' وتحويله إلى «مقبول»؟'))return;
+        accept.disabled=true;accept.textContent='جاري التثبيت...';
+        try{
+          const {data,error}=await db.rpc('store_staff_accept_order',{p_order_id:o.id});
+          if(error)throw error;
+          if(data==='accepted'){
+            staffNotice('تم تثبيت الطلب #'+o.id+' بنجاح.');
+            await loadStaffOrders();
+          }else if(data==='payment_pending'){
+            staffNotice('ما نكدر نثبت هذا الطلب: التحويل الإلكتروني بعده بانتظار تأكيد المدير.',true);
+          }else if(data==='already_processed'){
+            staffNotice('الطلب تغيّرت حالته قبل التثبيت. جاري تحديث القائمة.');await loadStaffOrders();
+          }else{staffNotice('ما لقينا الطلب، أو ما متاح تثبيته.',true);await loadStaffOrders()}
+        }catch(e){staffNotice('تعذر تثبيت الطلب: '+e.message,true)}
+        finally{accept.disabled=false;accept.textContent='✓ تثبيت الطلب'}
+      };
+      foot.append(accept);
+    }
+    card.append(head,details,itemBox,foot);root.append(card);
+  }
+}
+$('staffSearch').addEventListener('input',()=>{if(isStaff)renderStaffOrders()});
+$('staffOnlyPending').addEventListener('change',()=>{if(isStaff)renderStaffOrders()});
+$('staffRefresh').onclick=()=>loadStaffOrders();
+$('staffLogout').onclick=async()=>{
+  const {error}=await db.auth.signOut();
+  if(error)return staffNotice('تعذر تسجيل الخروج: '+error.message,true);
+  isStaff=false;staffOrders=[];staffItems=[];
+  show('admin');await checkAuth();
+};
 
 loadShop();
 show('admin');checkAuth();
